@@ -39,6 +39,7 @@ odconv=nirs.modules.OpticalDensity();
 od=odconv.run(rawdata);
 
 % OPTIONAL TDDR motion correction
+% It's fine to do twice motion correction
 disp('TDDR step...')
 tddr = nirs.modules.TDDR();
 tddr.usePCA = 1; 
@@ -55,6 +56,7 @@ od=tddr.run(od);
 % od = wavelet.run(od);
 
 % Downsample the data
+% Do the downsampling after motion artifact correction
 disp('Running data resample...')
 resample=nirs.modules.Resample();
 resample.Fs=2; % Resample the data to 2 Hz
@@ -73,6 +75,7 @@ trim.postBaseline=5; % 5 sec after the last stim
 hb_trim=trim.run(hb);
 
 % Optional SNR check with the hb data
+SNR_od = SNR_check(od); % SNR of the raw data
 SNR = SNR_check(hb_trim);
 
 % save('Data_preprocessed_hb.mat','hb_trim','-v7.3','-nocompression')
@@ -88,7 +91,7 @@ firstlevelbasis = nirs.design.basis.Canonical();
 % Adding temporal & dispersion derivatives to canonical HRF function
 % firstlevelbasis.incDeriv=1;
 
-% DCT matrix to account for signal drift over time
+% DCT matrix to account for signal drift over time (slow wave)
 % firstlevelglm.trend_func=@(t) nirs.design.trend.dctmtx(t,0.008);
 
 % HRF peak time = 6s based on Friederici and Booth papers (e.g. Brauer, Neumann & Friederici, 2008, NeuroImage)
