@@ -111,6 +111,7 @@ disp('Done!')
 
 Demo = nirs.modules.AddDemographics();
 Demo.demoTable = readtable('./Example_dataset/Demographic_fake.csv');
+Demo.demoTable.Subject = cellstr(string(Demo.demoTable.Subject));
 Demo.varToMatch='Subject';
 SubjStats = Demo.run(SubjStats);
 
